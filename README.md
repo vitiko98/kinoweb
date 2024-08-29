@@ -6,7 +6,7 @@ Source code of Kinobot's web editor and UI (WIP)
 
 Install requirements
 ```console
-pip -r requirements.txt
+pip install -r requirements.txt
 ```
 
 Run the `dummy_bootstrap.py` script
