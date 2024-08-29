@@ -1,0 +1,33 @@
+media:
+  - id: "103"
+    type: "movie"
+    uri: "movie:103"
+    title: "Taxi Driver"
+    poster: null
+    backdrop: null
+    external_link: null
+    proximity: 100
+
+  - id: "104"
+    type: "movie"
+    uri: "movie:104"
+    title: "Parasite"
+    poster: null
+    backdrop: null
+    external_link: null
+    proximity: 100
+
+bracket_suggestions:
+  "103":
+    - media_id: "103"
+      timestamp: "10000"
+      quote: "You talking to me?"
+
+  "104":
+    - media_id: "104"
+      timestamp: "10000"
+      quote: "Parasite quote"
+
+frame_responses:
+  "103": {url: "https://image.tmdb.org/t/p/original/6aoyUbvu0419XLKLIMoH0TkEicH.jpg"}
+  "104": {url: "https://image.tmdb.org/t/p/original/8eihUxjQsJ7WvGySkVMC0EwbPAD.jpg"}

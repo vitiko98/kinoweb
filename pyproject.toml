@@ -1,0 +1,5 @@
+[tool.isort]
+profile = "google"
+
+[tool.pytest.ini_options]
+addopts = "--log-cli-level=debug -x -s --disable-warnings"
