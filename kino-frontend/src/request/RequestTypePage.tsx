@@ -22,9 +22,26 @@ const RequestTypePage = () => {
   const [isSearchMenuVisible, setIsSearchMenuVisible] = useState(false);
   const [frameContainerItems, setFrameContainerItems] = useState<Frame[]>([]);
   const [kinoCommand, setKinoCommand] = useState<string>('');
+  const [isOverlayVisible, setIsOverlayVisible] = useState(false);
+  const [selectedFrameItem, setSelectedFrameItem] = useState<Frame | null>(null);
   const [frameImage, setFrameImage] = useState<string>('');
 
+  const FrameOverlay = ({ item, onClose }: { item: Frame; onClose: () => void }) => (
+    <div className="overlay">
+    <div className="overlay-content">
+      <button className="close-button" onClick={onClose}>X</button>
+      <h2>{item.media.title}</h2>
+      <img src={item.preview_url} className="overlay-image" />
+      <button onClick={onClose}>Close</button>
+    </div>
+  </div>
+);
+
   const generateCommand = () => {
+    if (frameContainerItems.length === 0) {
+        setKinoCommand("");
+        return;
+    }
     let command = "";
     let isSameMedia = true;
     for (const frame of frameContainerItems) {
@@ -138,7 +155,7 @@ setKinoCommand(command);
         {frameContainerItems.map((item) => (
           <div key={item.media.id} className="frame-item">
             <p>{item.media.title}</p>
-            <img src={item.preview_url} className="frame-image" />
+            <img src={item.preview_url} className="frame-image" onClick={() => {setSelectedFrameItem(item); setIsOverlayVisible(true)}}/>
             <button className='remove-button' onClick={() => setFrameContainerItems(frameContainerItems.filter((frame) => frame.frame_id !== item.frame_id))}>
               <FaTrash />
             </button>
@@ -173,6 +190,9 @@ setKinoCommand(command);
       )}
       </div>
       </div>
+      {isOverlayVisible && selectedFrameItem && (
+        <FrameOverlay item={selectedFrameItem} onClose={() => setIsOverlayVisible(false)} />
+      )}
     </div>
   );
 };
