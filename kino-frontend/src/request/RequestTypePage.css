@@ -13,13 +13,41 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    z-index: 10;
   }
 
+.overlay-header {
+    margin-top: 0px;
+    background: dimgray;
+    padding: 5px;
+    border-radius: 5px 5px 0 0;
+    text-align: center;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.overlay-header h2 {
+    flex: 1;
+    text-align: center;
+}
+
+.overlay-header .close-button {
+    display: flex;
+    background: dimgray;
+    border: none;
+    font-size: 10px;
+    cursor: pointer;
+}
+
   .overlay-content {
-    background: white;
+    width: 75%;
+    height: 75%;
+    background: dimgray;
     padding: 20px;
     border-radius: 5px;
     text-align: center;
+    display: flex;
   }
 
   .close-button {
@@ -32,9 +60,21 @@
     cursor: pointer;
 }
   
-  .overlay-image {
+  .image-container {
     max-width: 75%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     height: auto;
+    padding: 5px;
+  }
+
+  .overlay-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 10px;
+  
   }
 
 .frame-container {
@@ -67,12 +107,43 @@
     margin-top: 20px;
 }
 
+.preview-container { 
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    overflow:hidden;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    position: relative; /* Add this line */
+}
+
+.preview-container::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Adjust the color and opacity as needed */
+    border-radius: 10px; /* Match the border-radius of the image */
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 1; /* Add this line */
+}
+
+.preview-container:hover {
+    cursor: pointer;
+}
+
+.preview-container:hover::after {
+    opacity: 1;
+}
+
 .frame-image { 
     width: 100%;
     height: 100%;
     object-fit: cover;
     border-radius: 10px;
-    margin-bottom: 10px;
 }
 
 .remove-button {

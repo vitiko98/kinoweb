@@ -1,5 +1,5 @@
-import React, { useState, useEffect} from 'react';
-import { searchMedia, getFrame } from './RequestAPI';
+import React, { useState, useEffect, useCallback} from 'react';
+import { searchMedia, getFrame, searchQuote } from './RequestAPI';
 import { FaTrash, FaSearch } from 'react-icons/fa';
 import './RequestTypePage.css';
 
@@ -7,35 +7,58 @@ interface Frame {
     frame_id: number,
     media: Media,
     timestamp: number // In milliseconds,
-    preview_url?: string
+    preview_url?: string,
+    quote?: string
 }
 
 interface Media {
-  id: string;
+  id: number;
   title: string;
   type: string; // movie, tv, or anime
 }
 
+interface Suggestion {
+  media_id: number,
+  timestamp: number,
+  quote: string
+}
+
 const RequestTypePage = () => {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [searchResults, setSearchResults] = useState<Media[]>([]);
-  const [isSearchMenuVisible, setIsSearchMenuVisible] = useState(false);
+  const [mediaSearchQuery, setMediaSearchQuery] = useState('');
+  const [searchResults, setMediaSearchResults] = useState<Media[]>([]);
+  const [quoteSearchQuery, setQuoteSearchQuery] = useState('');
+  const [quoteSearchResults, setQuoteSearchResults] = useState<Suggestion[]>([]);
+  const [isMediaSearchMenuVisible, setisMediaSearchMenuVisible] = useState(false);
   const [frameContainerItems, setFrameContainerItems] = useState<Frame[]>([]);
   const [kinoCommand, setKinoCommand] = useState<string>('');
   const [isOverlayVisible, setIsOverlayVisible] = useState(false);
   const [selectedFrameItem, setSelectedFrameItem] = useState<Frame | null>(null);
   const [frameImage, setFrameImage] = useState<string>('');
 
+  const handleQuoteSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setQuoteSearchQuery(e.target.value);
+  }, []);
+
   const FrameOverlay = ({ item, onClose }: { item: Frame; onClose: () => void }) => (
     <div className="overlay">
-    <div className="overlay-content">
-      <button className="close-button" onClick={onClose}>X</button>
-      <h2>{item.media.title}</h2>
-      <img src={item.preview_url} className="overlay-image" />
-      <button onClick={onClose}>Close</button>
+      <div className="overlay-content">
+        <div className="overlay-header">
+          <button className="close-button" onClick={onClose}>X</button>
+        </div>
+        <div className="image-container">
+          <img src={item.preview_url} className="overlay-image" />
+        </div>
+        <div className="settings-container">
+          <div className="search-menu-wrapper">
+            <div className="search-menu-bar">
+            <FaSearch id="search-icon" />
+              <input type="text" placeholder="Search quote" value={quoteSearchQuery} onChange={handleQuoteSearchChange}/>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-  </div>
-);
+  );
 
   const generateCommand = () => {
     if (frameContainerItems.length === 0) {
@@ -76,7 +99,7 @@ setKinoCommand(command);
 
   const getFramePreview = async (frame: Frame): Promise<string> => {
     try {
-      const frameImage = await getFrame(parseInt(frame.media.id), frame.timestamp);
+      const frameImage = await getFrame(frame.media.id, frame.timestamp);
       frame.preview_url = frameImage.url;
       setFrameContainerItems([...frameContainerItems]);
       return frameImage.url; // Return the preview URL
@@ -123,26 +146,44 @@ setKinoCommand(command);
   };
 
   // Function to handle search
-  const handleSearch = async (query: string) => {
+  const handleMediaSearch = async (query: string) => {
     if (query && query.length > 1) {
       try {
         const results = await searchMedia(query);
-        setSearchResults(results);
+        setMediaSearchResults(results);
       } catch (error) {
         console.error('Error fetching search results:', error);
       }
     } else {
-      setSearchResults([]);
+      setMediaSearchResults([]);
     }
   };
 
-  // Debounced version of handleSearch
-  const debouncedSearch = debounce(handleSearch, 300);
+  const handleQuoteSearch = async (id: number, query: string) => {
+    if (query && query.length > 1) {
+      try {
+        const results = await searchQuote(id, query);
+        setQuoteSearchResults(results);
+      } catch (error) {
+        console.error('Error fetching search results:', error);
+      }
+    } else {
+      setQuoteSearchResults([]);
+    }
+  }
+
+  // Debounced version of handleMediaSearch
+  const debouncedMediaSearch = debounce(handleMediaSearch, 300);
+  const debouncedQuoteSearch = debounce(handleQuoteSearch, 300);
 
   // useEffect to trigger search on searchQuery change
   useEffect(() => {
-    debouncedSearch(searchQuery);
-  }, [searchQuery]);
+    debouncedMediaSearch(mediaSearchQuery);
+  }, [mediaSearchQuery]);
+
+  useEffect(() => {
+    debouncedQuoteSearch(selectedFrameItem?.media.id, quoteSearchQuery);
+  }, [quoteSearchQuery]);
 
   return (
     <div>
@@ -155,17 +196,19 @@ setKinoCommand(command);
         {frameContainerItems.map((item) => (
           <div key={item.media.id} className="frame-item">
             <p>{item.media.title}</p>
-            <img src={item.preview_url} className="frame-image" onClick={() => {setSelectedFrameItem(item); setIsOverlayVisible(true)}}/>
+            <div className="preview-container" onClick={() => {setSelectedFrameItem(item); setIsOverlayVisible(true)}}>
+            <img src={item.preview_url} className="frame-image"/>
+            </div>
             <button className='remove-button' onClick={() => setFrameContainerItems(frameContainerItems.filter((frame) => frame.frame_id !== item.frame_id))}>
               <FaTrash />
             </button>
           </div>
         ))}
         <div className="add-frame-container">
-      <button className="add-frame" onClick={() => setIsSearchMenuVisible(!isSearchMenuVisible)}>
+      <button className="add-frame" onClick={() => setisMediaSearchMenuVisible(!isMediaSearchMenuVisible)}>
         Add Frame
       </button>
-      {isSearchMenuVisible && (
+      {isMediaSearchMenuVisible && (
         <div className="search-menu-wrapper">
           <div className="search-menu-bar">
             <FaSearch id="search-icon" />
@@ -173,8 +216,8 @@ setKinoCommand(command);
               className="search-input"
               type="text"
               placeholder="Title"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              value={mediaSearchQuery}
+              onChange={(e) => setMediaSearchQuery(e.target.value)}
             />
           </div>
           {searchResults.length > 0 && (

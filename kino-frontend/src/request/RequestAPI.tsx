@@ -22,7 +22,7 @@ async function searchQuote(id: number, search: string) {
         "offset": 0
     }
     try {
-        const response = await axiosInstance.get(`/media/${id}`, { params: request });
+        const response = await axiosInstance.get(`/media/${id}/suggestions`, { params: request });
         return response.data
     } catch (error) {
         console.error("Error fetching quote:", error)
