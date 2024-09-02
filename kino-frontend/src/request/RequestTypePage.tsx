@@ -23,10 +23,31 @@ interface Suggestion {
   quote: string
 }
 
+const FrameOverlay = ({ item, onClose, quoteSearchQuery, handleQuoteSearchChange }: { item: Frame; onClose: () => void; quoteSearchQuery: string; handleQuoteSearchChange:  (e: React.ChangeEvent<HTMLInputElement>) => void }) => (
+  <div className="overlay">
+    <div className="overlay-content">
+      <div className="overlay-header">
+        <button className="close-button" onClick={onClose}>X</button>
+      </div>
+      <div className="image-container">
+        <img src={item.preview_url} className="overlay-image" />
+      </div>
+      <div className="settings-container">
+        <div className="search-menu-wrapper">
+          <div className="search-menu-bar">
+          <FaSearch id="search-icon" />
+            <input type="text" placeholder="Search quote" value={quoteSearchQuery} onChange={handleQuoteSearchChange}/>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+);
+
 const RequestTypePage = () => {
   const [mediaSearchQuery, setMediaSearchQuery] = useState('');
   const [searchResults, setMediaSearchResults] = useState<Media[]>([]);
-  const [quoteSearchQuery, setQuoteSearchQuery] = useState('');
+  const [quoteSearchQuery, setQuoteSearchQuery] = useState<string>('');
   const [quoteSearchResults, setQuoteSearchResults] = useState<Suggestion[]>([]);
   const [isMediaSearchMenuVisible, setisMediaSearchMenuVisible] = useState(false);
   const [frameContainerItems, setFrameContainerItems] = useState<Frame[]>([]);
@@ -35,30 +56,9 @@ const RequestTypePage = () => {
   const [selectedFrameItem, setSelectedFrameItem] = useState<Frame | null>(null);
   const [frameImage, setFrameImage] = useState<string>('');
 
-  const handleQuoteSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleQuoteSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setQuoteSearchQuery(e.target.value);
-  }, []);
-
-  const FrameOverlay = ({ item, onClose }: { item: Frame; onClose: () => void }) => (
-    <div className="overlay">
-      <div className="overlay-content">
-        <div className="overlay-header">
-          <button className="close-button" onClick={onClose}>X</button>
-        </div>
-        <div className="image-container">
-          <img src={item.preview_url} className="overlay-image" />
-        </div>
-        <div className="settings-container">
-          <div className="search-menu-wrapper">
-            <div className="search-menu-bar">
-            <FaSearch id="search-icon" />
-              <input type="text" placeholder="Search quote" value={quoteSearchQuery} onChange={handleQuoteSearchChange}/>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+  };
 
   const generateCommand = () => {
     if (frameContainerItems.length === 0) {
@@ -109,7 +109,7 @@ setKinoCommand(command);
     }
   }
 
-  const handleResultClick = async (result: Media) => {
+  const handleMediaResultClick = async (result: Media) => {
     if (frameContainerItems.length >= 15) {
         alert('You can only have up to 15 frames');
         return;
@@ -164,6 +164,7 @@ setKinoCommand(command);
       try {
         const results = await searchQuote(id, query);
         setQuoteSearchResults(results);
+        console.log(results);
       } catch (error) {
         console.error('Error fetching search results:', error);
       }
@@ -223,7 +224,7 @@ setKinoCommand(command);
           {searchResults.length > 0 && (
             <div className="search-results">
               {searchResults.map((result) => (
-                <div key={result.id} className="search-result-item" onClick={() => handleResultClick(result)}>
+                <div key={result.id} className="search-result-item" onClick={() => handleMediaResultClick(result)}>
                   <p>{result.title} ({result.type.charAt(0).toUpperCase() + result.type.slice(1)})</p>
                 </div>
               ))}
@@ -234,7 +235,12 @@ setKinoCommand(command);
       </div>
       </div>
       {isOverlayVisible && selectedFrameItem && (
-        <FrameOverlay item={selectedFrameItem} onClose={() => setIsOverlayVisible(false)} />
+        <FrameOverlay
+          item={selectedFrameItem}
+          onClose={() => setIsOverlayVisible(false)}
+          quoteSearchQuery={quoteSearchQuery}
+          handleQuoteSearchChange={handleQuoteSearchChange}
+        />
       )}
     </div>
   );
