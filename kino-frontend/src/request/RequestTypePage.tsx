@@ -82,6 +82,9 @@ const RequestTypePage = () => {
         const formattedTimestamp = new Date(frame.timestamp).toISOString().substr(11, 8);
         command += "[" + formattedTimestamp + "]";
       }
+    } else {
+      const formattedTimestamp = new Date(frameContainerItems[0].timestamp).toISOString().substr(11, 8);
+      command += "[" + formattedTimestamp + "]";
     }
   } else {
     command += "!fparallel ";
