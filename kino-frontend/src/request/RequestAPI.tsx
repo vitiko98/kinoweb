@@ -30,4 +30,18 @@ async function searchQuote(id: number, search: string) {
     }
 }
 
-export { searchMedia, searchQuote }
+async function getFrame(id:number, timestamp:number) {
+    const request = {
+        "ms": timestamp,
+        "type": "png"
+    }
+    try {
+        const response = await axiosInstance.get(`/media/${id}/frame`, { params: request });
+        return response.data
+    } catch (error) {
+        console.error("Error fetching frame:", error)
+        throw error
+    }
+}
+
+export { searchMedia, searchQuote, getFrame }

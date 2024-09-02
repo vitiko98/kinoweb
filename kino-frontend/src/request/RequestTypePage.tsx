@@ -1,12 +1,13 @@
 import React, { useState, useEffect} from 'react';
-import { searchMedia } from './RequestAPI';
+import { searchMedia, getFrame } from './RequestAPI';
 import { FaTrash, FaSearch } from 'react-icons/fa';
 import './RequestTypePage.css';
 
 interface Frame {
     frame_id: number,
     media: Media,
-    timestamp: number // In milliseconds
+    timestamp: number // In milliseconds,
+    preview_url?: string
 }
 
 interface Media {
@@ -21,9 +22,9 @@ const RequestTypePage = () => {
   const [isSearchMenuVisible, setIsSearchMenuVisible] = useState(false);
   const [frameContainerItems, setFrameContainerItems] = useState<Frame[]>([]);
   const [kinoCommand, setKinoCommand] = useState<string>('');
+  const [frameImage, setFrameImage] = useState<string>('');
 
   const generateCommand = () => {
-    
     let command = "";
     let isSameMedia = true;
     for (const frame of frameContainerItems) {
@@ -56,20 +57,40 @@ if (command.charAt(command.length - 2) == "|") {
 setKinoCommand(command);
   };
 
-  const handleResultClick = (result: Media) => {
+  const getFramePreview = async (frame: Frame): Promise<string> => {
+    try {
+      const frameImage = await getFrame(parseInt(frame.media.id), frame.timestamp);
+      frame.preview_url = frameImage.url;
+      setFrameContainerItems([...frameContainerItems]);
+      return frameImage.url; // Return the preview URL
+    } catch (error) {
+      console.error('Error fetching frame image:', error);
+      return ''; // Return an empty string or handle the error as needed
+    }
+  }
+
+  const handleResultClick = async (result: Media) => {
     if (frameContainerItems.length >= 15) {
         alert('You can only have up to 15 frames');
         return;
     }
+
     const len = frameContainerItems.length;
     const id = frameContainerItems[len - 1] ? frameContainerItems[len - 1].frame_id + 1 : 0;
-    const frame = {
-        frame_id: id,
-        media: result,
-        timestamp: 0
+
+    try {
+        const preview_url = await getFramePreview({ frame_id: id, media: result, timestamp: 0 });
+        const frame = {
+            frame_id: id,
+            media: result,
+            timestamp: 0,
+            preview_url: preview_url
+        };
+        setFrameContainerItems([...frameContainerItems, frame]);
+    } catch (error) {
+        console.error('Error generating frame preview:', error);
     }
-    setFrameContainerItems([...frameContainerItems, frame]);
-    };
+};
 
   // Debounce function to limit the rate of API calls
   const debounce = (func: Function, delay: number) => {
@@ -115,9 +136,9 @@ setKinoCommand(command);
         <h1>Frames</h1>
         <div className="frame-container">
         {frameContainerItems.map((item) => (
-
           <div key={item.media.id} className="frame-item">
             <p>{item.media.title}</p>
+            <img src={item.preview_url} className="frame-image" />
             <button className='remove-button' onClick={() => setFrameContainerItems(frameContainerItems.filter((frame) => frame.frame_id !== item.frame_id))}>
               <FaTrash />
             </button>
