@@ -1,18 +1,18 @@
 import React, { useState, useEffect} from 'react';
 import { searchMedia } from './RequestAPI';
-import { FaSearch } from 'react-icons/fa';
+import { FaTrash, FaSearch } from 'react-icons/fa';
 import './RequestTypePage.css';
 
 interface Frame {
     frame_id: number,
     media: Media,
-    timestamp: number
+    timestamp: number // In milliseconds
 }
 
 interface Media {
   id: string;
   title: string;
-  type: string;
+  type: string; // movie, tv, or anime
 }
 
 const RequestTypePage = () => {
@@ -23,7 +23,7 @@ const RequestTypePage = () => {
   const [kinoCommand, setKinoCommand] = useState<string>('');
 
   const generateCommand = () => {
-    const media = frameContainerItems[0].media;
+    
     let command = "";
     let isSameMedia = true;
     for (const frame of frameContainerItems) {
@@ -34,12 +34,25 @@ const RequestTypePage = () => {
         }
   }
   if (isSameMedia) {
-    command += "!freq " + media.title + " ";
-    
+    const media = frameContainerItems[0].media;
+    command += "!freq " + media.title;
+    if (frameContainerItems.length > 1) {
+      for (const frame of frameContainerItems) {
+        const formattedTimestamp = new Date(frame.timestamp).toISOString().substr(11, 8);
+        command += "[" + formattedTimestamp + "]";
+      }
+    }
   } else {
-    command += "!fparallel " + media.title + " ";
-  
+    command += "!fparallel ";
+    for (const frame of frameContainerItems) {
+      command += frame.media.title + " | ";
+      }
 }
+// remove trailing |
+if (command.charAt(command.length - 2) == "|") {
+    command = command.slice(0, -3);
+}
+
 setKinoCommand(command);
   };
 
@@ -52,15 +65,16 @@ setKinoCommand(command);
     const id = frameContainerItems[len - 1] ? frameContainerItems[len - 1].frame_id + 1 : 0;
     const frame = {
         frame_id: id,
-        media: result
+        media: result,
+        timestamp: 0
     }
     setFrameContainerItems([...frameContainerItems, frame]);
     };
 
   // Debounce function to limit the rate of API calls
-  const debounce = (func, delay: number) => {
+  const debounce = (func: Function, delay: number) => {
     let timeoutId: number;
-    return (...args) => {
+    return (...args: any[]) => {
       if (timeoutId) {
         clearTimeout(timeoutId);
       }
@@ -104,9 +118,8 @@ setKinoCommand(command);
 
           <div key={item.media.id} className="frame-item">
             <p>{item.media.title}</p>
-            <input className="quote-search-bar" type="text" placeholder="Search quote" />
-            <button onClick={() => setFrameContainerItems(frameContainerItems.filter((frame) => frame.frame_id !== item.frame_id))}>
-              Remove
+            <button className='remove-button' onClick={() => setFrameContainerItems(frameContainerItems.filter((frame) => frame.frame_id !== item.frame_id))}>
+              <FaTrash />
             </button>
           </div>
         ))}
@@ -130,7 +143,7 @@ setKinoCommand(command);
             <div className="search-results">
               {searchResults.map((result) => (
                 <div key={result.id} className="search-result-item" onClick={() => handleResultClick(result)}>
-                  <p>{result.title}, {result.type.charAt(0).toUpperCase() + result.type.slice(1)}</p>
+                  <p>{result.title} ({result.type.charAt(0).toUpperCase() + result.type.slice(1)})</p>
                 </div>
               ))}
             </div>
