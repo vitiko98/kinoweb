@@ -38,6 +38,7 @@ const FrameOverlay = ({ item, onClose, quoteSearchQuery, handleQuoteSearchChange
           <FaSearch id="search-icon" />
             <input type="text" placeholder="Search quote" value={quoteSearchQuery} onChange={handleQuoteSearchChange}/>
           </div>
+          
         </div>
       </div>
     </div>
@@ -46,7 +47,7 @@ const FrameOverlay = ({ item, onClose, quoteSearchQuery, handleQuoteSearchChange
 
 const RequestTypePage = () => {
   const [mediaSearchQuery, setMediaSearchQuery] = useState('');
-  const [searchResults, setMediaSearchResults] = useState<Media[]>([]);
+  const [mediaSearchResults, setMediaSearchResults] = useState<Media[]>([]);
   const [quoteSearchQuery, setQuoteSearchQuery] = useState<string>('');
   const [quoteSearchResults, setQuoteSearchResults] = useState<Suggestion[]>([]);
   const [isMediaSearchMenuVisible, setisMediaSearchMenuVisible] = useState(false);
@@ -76,7 +77,7 @@ const RequestTypePage = () => {
   }
   if (isSameMedia) {
     const media = frameContainerItems[0].media;
-    command += "!freq " + media.title;
+    command += "!req " + media.title;
     if (frameContainerItems.length > 1) {
       for (const frame of frameContainerItems) {
         const formattedTimestamp = new Date(frame.timestamp).toISOString().substr(11, 8);
@@ -87,9 +88,10 @@ const RequestTypePage = () => {
       command += "[" + formattedTimestamp + "]";
     }
   } else {
-    command += "!fparallel ";
+    command += "!parallel ";
     for (const frame of frameContainerItems) {
-      command += frame.media.title + " | ";
+      const formattedTimestamp = new Date(frameContainerItems[0].timestamp).toISOString().substr(11, 8);
+      command += frame.media.title + "[" + formattedTimestamp + "]" + " | ";
       }
 }
 // remove trailing |
@@ -224,9 +226,9 @@ setKinoCommand(command);
               onChange={(e) => setMediaSearchQuery(e.target.value)}
             />
           </div>
-          {searchResults.length > 0 && (
+          {mediaSearchResults.length > 0 && (
             <div className="search-results">
-              {searchResults.map((result) => (
+              {mediaSearchResults.map((result) => (
                 <div key={result.id} className="search-result-item" onClick={() => handleMediaResultClick(result)}>
                   <p>{result.title} ({result.type.charAt(0).toUpperCase() + result.type.slice(1)})</p>
                 </div>
