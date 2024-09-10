@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback} from 'react';
+import React, { useState, useEffect} from 'react';
 import { searchMedia, getFrame, searchQuote } from './RequestAPI';
 import { FaTrash, FaSearch } from 'react-icons/fa';
 import './RequestTypePage.css';
@@ -23,7 +23,7 @@ interface Suggestion {
   quote: string
 }
 
-const FrameOverlay = ({ item, onClose, quoteSearchQuery, handleQuoteSearchChange }: { item: Frame; onClose: () => void; quoteSearchQuery: string; handleQuoteSearchChange:  (e: React.ChangeEvent<HTMLInputElement>) => void }) => (
+const FrameOverlay = ({ item, onClose, quoteSearchQuery, handleQuoteSearchChange, quoteSearchResults }: { item: Frame; onClose: () => void; quoteSearchQuery: string; handleQuoteSearchChange: (e: React.ChangeEvent<HTMLInputElement>) => void; quoteSearchResults: Suggestion[] }) => (
   <div className="overlay">
     <div className="overlay-content">
       <div className="overlay-header">
@@ -35,10 +35,18 @@ const FrameOverlay = ({ item, onClose, quoteSearchQuery, handleQuoteSearchChange
       <div className="settings-container">
         <div className="search-menu-wrapper">
           <div className="search-menu-bar">
-          <FaSearch id="search-icon" />
-            <input type="text" placeholder="Search quote" value={quoteSearchQuery} onChange={handleQuoteSearchChange}/>
+            <FaSearch id="search-icon" />
+            <input type="text" placeholder="Search quote" value={quoteSearchQuery} onChange={handleQuoteSearchChange} />
           </div>
-          
+          {quoteSearchResults.length > 0 && (
+            <div className="search-results">
+              {quoteSearchResults.map((result) => (
+                <div key={result.timestamp} className="search-result-item">
+                  <p>{result.quote}</p>
+                </div>
+              ))}
+              </div>
+            )}
         </div>
       </div>
     </div>
@@ -245,6 +253,7 @@ setKinoCommand(command);
           onClose={() => setIsOverlayVisible(false)}
           quoteSearchQuery={quoteSearchQuery}
           handleQuoteSearchChange={handleQuoteSearchChange}
+          quoteSearchResults={quoteSearchResults}
         />
       )}
     </div>

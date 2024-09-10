@@ -23,6 +23,7 @@ async function searchQuote(id: number, search: string) {
     }
     try {
         const response = await axiosInstance.get(`/media/${id}/suggestions`, { params: request });
+        console.log(response.data)
         return response.data
     } catch (error) {
         console.error("Error fetching quote:", error)
