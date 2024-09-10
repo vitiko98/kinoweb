@@ -77,6 +77,8 @@ const RequestTypePage = () => {
       const preview_url = await getFramePreview(selectedFrameItem);
       console.log(preview_url);
       selectedFrameItem.preview_url = preview_url;
+      setQuoteSearchResults([]);
+      setQuoteSearchQuery('');
     }
   };
 
