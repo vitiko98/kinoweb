@@ -63,17 +63,20 @@ const RequestTypePage = () => {
   const [kinoCommand, setKinoCommand] = useState<string>('');
   const [isOverlayVisible, setIsOverlayVisible] = useState(false);
   const [selectedFrameItem, setSelectedFrameItem] = useState<Frame | null>(null);
-  const [frameImage, setFrameImage] = useState<string>('');
 
   const handleQuoteSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setQuoteSearchQuery(e.target.value);
   };
   
-  const setQuote = (quote: Suggestion) => {
+  const setQuote = async (quote: Suggestion) => {
     if (selectedFrameItem) {
       selectedFrameItem.quote = quote;
       selectedFrameItem.timestamp = quote.timestamp;
       setFrameContainerItems([...frameContainerItems]);
+      setIsOverlayVisible(false);
+      const preview_url = await getFramePreview(selectedFrameItem);
+      console.log(preview_url);
+      selectedFrameItem.preview_url = preview_url;
     }
   };
 
