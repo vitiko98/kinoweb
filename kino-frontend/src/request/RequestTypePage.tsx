@@ -111,7 +111,7 @@ const RequestTypePage = () => {
   } else {
     command += "!parallel ";
     for (const frame of frameContainerItems) {
-      const formattedTimestamp = new Date(frameContainerItems[0].timestamp).toISOString().substr(11, 8);
+      const formattedTimestamp = new Date(frame.timestamp).toISOString().substr(11, 8);
       command += frame.media.title + "[" + formattedTimestamp + "]" + " | ";
       }
 }
