@@ -8,7 +8,7 @@ interface Frame {
     media: Media,
     timestamp: number // In milliseconds,
     preview_url?: string,
-    quote?: Suggestion
+    suggestion?: Suggestion
 }
 
 interface Media {
@@ -23,7 +23,7 @@ interface Suggestion {
   quote: string
 }
 
-const FrameOverlay = ({ item, onClose, quoteSearchQuery, handleQuoteSearchChange, quoteSearchResults, setQuote }: { item: Frame; onClose: () => void; quoteSearchQuery: string; handleQuoteSearchChange: (e: React.ChangeEvent<HTMLInputElement>) => void; quoteSearchResults: Suggestion[]; setQuote: (quote: Suggestion) => void }) => (
+const FrameOverlay = ({ item, onClose, quoteSearchQuery, handleQuoteSearchChange, quoteSearchResults, setQuote }: { item: Frame; onClose: () => void; quoteSearchQuery: string; handleQuoteSearchChange: (e: React.ChangeEvent<HTMLInputElement>) => void; quoteSearchResults: Suggestion[]; setQuote: (suggestion: Suggestion) => void }) => (
   <div className="overlay">
     <div className="overlay-content">
       <div className="overlay-header">
@@ -70,7 +70,7 @@ const RequestTypePage = () => {
   
   const setQuote = async (quote: Suggestion) => {
     if (selectedFrameItem) {
-      selectedFrameItem.quote = quote;
+      selectedFrameItem.suggestion = quote;
       selectedFrameItem.timestamp = quote.timestamp;
       setFrameContainerItems([...frameContainerItems]);
       setIsOverlayVisible(false);
