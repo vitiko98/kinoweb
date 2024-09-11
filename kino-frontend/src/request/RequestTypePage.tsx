@@ -33,6 +33,8 @@ const FrameOverlay = ({ item, onClose, quoteSearchQuery, handleQuoteSearchChange
         <img src={item.preview_url} className="overlay-image" />
       </div>
       <div className="settings-container">
+        <p>{item.media.title}</p>
+        <p>Timestamp: {new Date(item.timestamp).toISOString().substr(11, 8)}</p>
         <div className="search-menu-wrapper">
           <div className="search-menu-bar">
             <FaSearch id="search-icon" />
