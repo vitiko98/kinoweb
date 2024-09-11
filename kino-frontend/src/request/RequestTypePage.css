@@ -1,0 +1,249 @@
+.command-container {
+    background-color: #404040;
+    border-radius: 10px;
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+  }
+
+.overlay-header {
+    margin-top: 0px;
+    background: dimgray;
+    padding: 5px;
+    border-radius: 5px 5px 0 0;
+    text-align: center;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.overlay-header h2 {
+    flex: 1;
+    text-align: center;
+}
+
+.overlay-header .close-button {
+    display: flex;
+    background: dimgray;
+    border: none;
+    font-size: 10px;
+    cursor: pointer;
+}
+
+  .overlay-content {
+    width: 75%;
+    height: 75%;
+    background: dimgray;
+    padding: 20px;
+    border-radius: 5px;
+    text-align: center;
+    display: flex;
+  }
+
+  .close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: transparent;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+}
+  
+  .image-container {
+    max-width: 75%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: auto;
+    padding: 5px;
+  }
+
+  .overlay-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 10px;
+  
+  }
+
+.frame-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.frame-container p {
+    border-radius: 10px;
+    padding: 10px;
+    color: white;
+    font-weight: bold;
+    background-color: dimgray;
+    margin-top: -5px;
+}
+
+.frame-item {
+    display: flex;
+    flex-direction: column;
+    width: 500px;
+    height: 500px;
+    background-color: #404040;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0px 0px 8px black;
+    margin-top: 20px;
+}
+
+.preview-container { 
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    overflow:hidden;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    position: relative; /* Add this line */
+}
+
+.preview-container::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Adjust the color and opacity as needed */
+    border-radius: 10px; /* Match the border-radius of the image */
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 1; /* Add this line */
+}
+
+.preview-container:hover {
+    cursor: pointer;
+}
+
+.preview-container:hover::after {
+    opacity: 1;
+}
+
+.frame-image { 
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.remove-button {
+    background-color: #ff0000;
+    border: none;
+    border-radius: 10px;
+    padding: 10px;
+    color: white;
+    font-weight: bold;
+    margin-top: auto;
+    width: 25%;
+    align-items: center;
+}
+
+.quote-search-bar {
+    border: none;
+    display: flex;
+    align-items: center;
+    width: 90%;
+    border-radius: 10px;
+    padding: 15px;
+    margin-top: 20px;
+}
+
+.quote-search-bar input {
+    border: none;
+    color: white;
+    width: 100%;
+    height: 100%;
+    font-size: 1rem;
+}
+
+.quote-search-bar input:focus {
+    outline: none;
+}
+
+.add-frame {
+    padding: 10px;
+    margin: auto;
+}
+
+.search-menu-wrapper {
+    margin-top: 20px;
+}
+
+.search-menu-bar {
+    background-color:dimgray;
+    border-radius: 10px;
+    height: 2.5rem;
+    padding: 0 15px;
+    box-shadow: 0px 0px 8px black;
+    display: flex;
+    align-items: center;
+}
+
+.search-menu-bar input {
+    border: none;
+    background-color: transparent;
+    color: white;
+    width: 100%;
+    height: 100%;
+    font-size: 1rem;
+    
+}
+
+.search-menu-bar input:focus {
+    outline: none;
+}
+
+.search-results {
+    background-color:#404040;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0px 0px 8px black;
+    display: flex;
+    flex-direction: column; /* Change this to column */
+    align-items: flex-start; /* Align items to the start of the column */
+    margin-top: 20px;
+    gap: 5px;
+}
+
+.search-result-item {
+    margin: 0;
+    padding: 0;
+    border-radius: 5px;
+    width: 100%;
+    background-color: transparent;
+}
+
+.search-result-item:hover {
+    cursor: pointer;
+    background-color: dimgray;
+}
+
+.search-result-item p {
+    
+    margin: 0;
+    padding: 0;
+    color: white;
+    font-weight: bold;
+    background-color: transparent;
+}
+

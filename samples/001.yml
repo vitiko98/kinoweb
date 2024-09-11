@@ -8,10 +8,37 @@ media:
     external_link: null
     proximity: 100
 
+  - id: "102"
+    type: "movie"
+    uri: "movie:102"
+    title: "Tales of Kanye"
+    poster: null
+    backdrop: null
+    external_link: null
+    proximity: 100
+
   - id: "104"
     type: "movie"
     uri: "movie:104"
     title: "Parasite"
+    poster: null
+    backdrop: null
+    external_link: null
+    proximity: 100
+
+  - id: "105"
+    type: "movie"
+    uri: "movie:105"
+    title: "The Dark Knight"
+    poster: null
+    backdrop: null
+    external_link: null
+    proximity: 100
+
+  - id: "106"
+    type: "tv"
+    uri: "movie:106"
+    title: "The Kanye West TV Show"
     poster: null
     backdrop: null
     external_link: null
@@ -31,3 +58,4 @@ bracket_suggestions:
 frame_responses:
   "103": {url: "https://image.tmdb.org/t/p/original/6aoyUbvu0419XLKLIMoH0TkEicH.jpg"}
   "104": {url: "https://image.tmdb.org/t/p/original/8eihUxjQsJ7WvGySkVMC0EwbPAD.jpg"}
+  "102": {url: "https://picsum.photos/1920/1080"}
