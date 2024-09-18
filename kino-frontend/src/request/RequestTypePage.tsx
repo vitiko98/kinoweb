@@ -15,6 +15,7 @@ interface Media {
   id: number;
   title: string;
   type: string; // movie, tv, or anime
+  backdrop?: string;
 }
 
 interface Suggestion {
@@ -128,7 +129,14 @@ setKinoCommand(command);
   const getFramePreview = async (frame: Frame): Promise<string> => {
     try {
       if (frame.timestamp === 0) {
-        throw new Error('Invalid timestamp'); // Manually throw an error if timestamp is 0
+        frame.preview_url = frame.media.backdrop
+        setFrameContainerItems([...frameContainerItems]);
+        if (frame.media.backdrop) {
+          return frame.media.backdrop;
+        }
+        else {
+          throw new Error('No backdrop available');
+        }
       }
       
       const frameImage = await getFrame(frame.media.id, frame.timestamp);
