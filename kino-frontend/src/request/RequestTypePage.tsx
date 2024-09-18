@@ -240,7 +240,10 @@ setKinoCommand(command);
           <div key={item.media.id} className="frame-item">
             <p>{item.media.title}</p>
             <div className="preview-container" onClick={() => {setSelectedFrameItem(item); setIsOverlayVisible(true)}}>
-            <img src={item.preview_url} className="frame-image"/>
+              <div className='image-wrapper'>
+                <img src="/placeholder.jpg" className="loading-image" alt="Loading"/>
+                <img src={item.preview_url} className="frame-image" alt='preview'/>
+              </div>
             </div>
             <button className='remove-button' onClick={() => setFrameContainerItems(frameContainerItems.filter((frame) => frame.frame_id !== item.frame_id))}>
               <FaTrash />
