@@ -127,13 +127,19 @@ setKinoCommand(command);
 
   const getFramePreview = async (frame: Frame): Promise<string> => {
     try {
+      if (frame.timestamp === 0) {
+        throw new Error('Invalid timestamp'); // Manually throw an error if timestamp is 0
+      }
+      
       const frameImage = await getFrame(frame.media.id, frame.timestamp);
       frame.preview_url = frameImage.url;
       setFrameContainerItems([...frameContainerItems]);
       return frameImage.url; // Return the preview URL
     } catch (error) {
       console.error('Error fetching frame image:', error);
-      return ''; // Return an empty string or handle the error as needed
+      const preview_url = "/placeholder.jpg";
+      frame.preview_url = preview_url;
+      return preview_url;
     }
   }
 
